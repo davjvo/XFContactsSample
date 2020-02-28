@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="XFContactsSample.Views.NewContactPage"
+             Title="Create contact">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="Save" Order="Primary" Text="Save" Priority="0" Command="{Binding SaveContactCommand}" CommandParameter="{Binding Contact}" />
+        <ToolbarItem Name="Help" Order="Secondary" Text="Help &amp; feedback" Priority="1" />
+        <ToolbarItem Name="Scan" Order="Secondary" Text="Scan" Priority="1" Command="{Binding ScanContactCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="20, 5">
+                <Frame CornerRadius="100" 
+                   HeightRequest="200"
+                   WidthRequest="200"
+                   HorizontalOptions="Center"
+                   Padding="0"
+                   IsClippedToBounds="True">
+                    <Image Source="{Binding ContactImage}" 
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Aspect="AspectFill" />
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SetContactImageCommand}" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="80*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="user" VerticalOptions="Start" />
+                    <StackLayout Grid.Column="1" VerticalOptions="End">
+                        <Entry IsVisible="{Binding ShowMoreNameInfo}" Text="{Binding Contact.NamePrefix}" Placeholder="Name prefix" />
+                        <Entry Text="{Binding Contact.FirstName}" Placeholder="First name" />
+                        <Entry IsVisible="{Binding ShowMoreNameInfo}" Text="{Binding Contact.MiddleName}" Placeholder="Middle name" />
+                        <Entry Text="{Binding Contact.LastName}" Placeholder="Last name" />
+                        <Entry IsVisible="{Binding ShowMoreNameInfo}" Text="{Binding Contact.NameSufix}" Placeholder="Name sufix" />
+                        <Entry IsVisible="{Binding ShowMoreInfo}" Text="{Binding Contact.PhoneticLastName}" Placeholder="Phonetic last name" />
+                        <Entry IsVisible="{Binding ShowMoreInfo}" Text="{Binding Contact.PhoneticMiddleName}" Placeholder="Phonetic middle name" />
+                        <Entry IsVisible="{Binding ShowMoreInfo}" Text="{Binding Contact.PhoneticFirstName}" Placeholder="Phonetic first name" />
+                        <Entry IsVisible="{Binding ShowMoreInfo}" Text="{Binding Contact.NickName}" Placeholder="Nickname" />
+                        <Entry IsVisible="{Binding ShowMoreInfo}" Text="{Binding Contact.FileAs}" Placeholder="File as" />
+                    </StackLayout>
+                    <Image Grid.Column="2" Source="{Binding ArrowImage}" VerticalOptions="Start">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChangeNameShownInfoCommand}" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="business" VerticalOptions="Start"  />
+                    <StackLayout Grid.Column="1" Grid.ColumnSpan="2" >
+                        <Entry Text="{Binding Contact.Company}" Placeholder="Company" />
+                        <Entry IsVisible="{Binding ShowMoreInfo}" Text="{Binding Contact.Title}" Placeholder="Title" />
+                    </StackLayout>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" HeightRequest="48" Source="phone" VerticalOptions="Start" />
+                    <Entry Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.Phone}" Placeholder="Phone" />
+                    <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MobileTypes}" Title="Phone type" SelectedItem="{Binding SelectedMobileType}" />
+                    <Image Grid.Row="2" Grid.Column="0" Source="mail" />
+                    <Entry Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.Email}" Placeholder="Email" VerticalOptions="Start" />
+                    <Picker Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AddressTypes}" Title="Select a type" SelectedItem="{Binding SelectedEmailType}" />
+                </Grid>
+                <Grid IsVisible="{Binding ShowMoreInfo}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="location" VerticalOptions="Start" />
+                    <Entry Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.Address}" Placeholder="Address" />
+                    <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding AddressTypes}" Title="Select a type" SelectedItem="{Binding SelectedAddressType}" />
+                    <Image Grid.Row="2" Grid.Column="0" Source="im" />
+                    <Entry Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.IM}" Placeholder="IM" />
+                    <Picker Grid.Row="3" Grid.Column="1"  ItemsSource="{Binding AIMTypes}" Title="Select a type" SelectedItem="{Binding SelectedAIMType}"/>
+                    <Image Grid.Row="4" Grid.Column="0" Source="website" />
+                    <Entry Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.WebSite}" Placeholder="Website" />
+                    <Image Grid.Row="5" Grid.Column="0" Source="date" />
+                    <DatePicker Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" />
+                    <Picker Grid.Row="6" Grid.Column="1" ItemsSource="{Binding DateTypes}" Title="Select a type" SelectedItem="{Binding SelectedDateType}" />
+                    <Image Grid.Row="7" Grid.Column="0" Source="relationship" />
+                    <Entry Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.Relationship}" Placeholder="Relationsip" />
+                    <Picker Grid.Row="8" Grid.Column="1" ItemsSource="{Binding RelationshipTypes}" Title="Select a type" SelectedItem="{Binding SelectedRelationShipType}" />
+                    <Image Grid.Row="9" Grid.Column="0" Source="sip"/>
+                    <Entry Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.SIP}" Placeholder="SIP" />
+                    <Image Grid.Row="10" Grid.Column="0" Source="notes" />
+                    <Entry Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Contact.Notes}" Placeholder="Notes" />
+                </Grid>
+                <Label HorizontalTextAlignment="Center" TextColor="Accent" Text="More fields" IsVisible="{Binding MoreFieldsNotShowing}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangeShownInfoCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,8 @@
+XFContactsSample/bin/*
+XFContactsSample/obj/*
+
+XFContactsSample.Android/bin/*
+XFContactsSample.Android/obj/*
+
+XFContactsSample.iOS/bin/*
+XFContactsSample.iOS/obj/*

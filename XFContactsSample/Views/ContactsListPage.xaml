@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:XFContactsSample.Controls"
+             mc:Ignorable="d"
+             x:Class="XFContactsSample.Views.ContactsListPage"
+             Title="Contacts"
+             x:Name="ContactsList"
+             Visual="Material">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="Agregar" Order="Primary" Text="Add" IconImageSource="roundPlus" Priority="0" Command="{Binding NavigateToNewContact}" />
+    </ContentPage.ToolbarItems>
+    <StackLayout Padding="10">
+        <Frame CornerRadius="20" Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <Image Source="hamburger" 
+                           Grid.Column="0" 
+                           Grid.Row="0" 
+                           />
+                <controls:CustomEntry
+                        Grid.Row="0" 
+                        Grid.Column="1"
+                        Placeholder="Search contacts"
+                        IsTextPredictionEnabled="False" />
+                <Image Source="kabab" 
+                           Grid.Row="0"
+                           Grid.Column="2" />
+                <Image Source="john"
+                           Grid.Row="0"
+                           Grid.Column="3"  />
+            </Grid>
+        </Frame>
+
+        <CollectionView
+            ItemsSource="{Binding Contacts}"
+            SelectedItem="{Binding Selected, Mode=TwoWay}"
+            VerticalScrollBarVisibility="Never"
+            IsGrouped="True"
+        >
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Frame Padding="20, 0">
+                        <Label Text="{Binding Key}" FontSize="Title" FontAttributes="Bold" />
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.LeftItems>
+                            <SwipeItem 
+                                Text="More"
+                                IconImageSource="kabab"
+                                BackgroundColor="Accent"
+                                Command="{Binding BindingContext.ShowMoreOptionsCommand, Source={x:Reference ContactsList} }"
+                                CommandParameter="{Binding .}"
+                            />
+                            <SwipeItem 
+                                Text="Delete"
+                                IconImageSource="delete"
+                                BackgroundColor="Red"
+                                Command="{Binding BindingContext.DeleteContactCommand, Source={x:Reference ContactsList} }"
+                                CommandParameter="{Binding .}"
+                            />
+                        </SwipeView.LeftItems>
+                        <Frame>
+                            <Label Text="{Binding DisplayName}" FontSize="Subtitle" />
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame>
+                            <Label Text="No data to show, press the plus button to add a new contact!" FontSize="Title" FontAttributes="Bold" />
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </StackLayout>
+</ContentPage>
