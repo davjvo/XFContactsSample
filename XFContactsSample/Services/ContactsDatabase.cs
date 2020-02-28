@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using XFContactsSample.Models;
@@ -14,7 +15,6 @@ namespace XFContactsSample.Services
         {
             return new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         });
-
         static SQLiteAsyncConnection Database => lazyInitializer.Value;
         static bool initialized = false;
 
@@ -35,9 +35,13 @@ namespace XFContactsSample.Services
             }
         }
 
-        public Task<List<Contact>> GetItemsAsync()
+        public Task<ObservableCollection<Contact>> GetItemsAsync()
         {
-            return Database.Table<Contact>().ToListAsync();
+            return Task.Run(async () =>
+            {
+                var contacts = await Database.Table<Contact>().ToListAsync();
+                return new ObservableCollection<Contact>(contacts);
+            });
         }
 
         public Task<Contact> GetItemAsync(int id)

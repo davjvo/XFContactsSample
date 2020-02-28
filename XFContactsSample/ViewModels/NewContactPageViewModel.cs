@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows.Input;
 using Xamarin.Forms;
 using XFContactsSample.Models;
+using XFContactsSample.Utils;
 using XFContactsSample.Views;
 using ZXing;
 
@@ -26,11 +27,11 @@ namespace XFContactsSample.ViewModels
 
         #region Properties
         public ImageSource ContactImage { get; set; }
-        public List<string> MobileTypes { get; set; }
-        public List<string> AddressTypes { get; set; }
-        public List<string> AIMTypes { get; set; }
-        public List<string> DateTypes { get; set; }
-        public List<string> RelationshipTypes { get; set; }
+        public List<string> MobileTypes { get { return Constants.MobileTypes; } }
+        public List<string> AddressTypes { get { return Constants.AddressTypes; } }
+        public List<string> AIMTypes { get { return Constants.AIMTypes; } }
+        public List<string> DateTypes { get { return Constants.DateTypes; } }
+        public List<string> RelationshipTypes { get { return Constants.RelationshipTypes; } }
         public string SelectedMobileType { get; set; }
         public string SelectedEmailType { get; set; }
         public string SelectedAddressType { get; set; }
@@ -85,65 +86,6 @@ namespace XFContactsSample.ViewModels
                     () => new MemoryStream(Convert.FromBase64String(Contact.Image))
                 );
             }
-
-            MobileTypes = new List<string>
-            {
-                "NoLabel",
-                "Mobile",
-                "Work",
-                "Home",
-                "Main",
-                "WorkFax",
-                "HomeFax",
-                "Pager",
-                "Other"
-            };
-
-            AddressTypes = new List<string>
-            {
-                "NoLabel",
-                "Home",
-                "Work",
-                "Other"
-            };
-
-            AIMTypes = new List<string>
-            {
-                "NoLabel",
-                "AIM",
-                "WindowsLive",
-                "Yahoo",
-                "Skype",
-                "QQ",
-                "Hangouts",
-                "ICQ",
-                "Jabber"
-            };
-
-            DateTypes = new List<string>
-            {
-                "NoLabel",
-                "Birthday",
-                "Anniversary",
-                "Other"
-            };
-
-            RelationshipTypes = new List<string>
-            {
-                "Assistant",
-                "Brother",
-                "Child",
-                "Partner",
-                "Father",
-                "Friend",
-                "Supervisor",
-                "Mother",
-                "Parent",
-                "WorkAssociate",
-                "Referrer",
-                "Sister",
-                "Spouse"
-            };
 
             MoreFieldsNotShowing = true;
 

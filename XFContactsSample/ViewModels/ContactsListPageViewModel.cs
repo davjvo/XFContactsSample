@@ -30,7 +30,7 @@ namespace XFContactsSample.ViewModels
             App.Database.GetItemsAsync().SafeFireAndForget(false);
             Contacts = new ObservableCollection<Grouping<string, Contact>>();
         }
-        public void GoToNew()
+        public async void GoToNew()
         {
             var newContactPageViewModel = new NewContactPageViewModel
             {
@@ -38,13 +38,7 @@ namespace XFContactsSample.ViewModels
             };
 
             var newContactPage = new NewContactPage(newContactPageViewModel);
-            Application.Current.MainPage.Navigation.PushAsync(newContactPage);
-        }
-        public async void DeleteContact(Contact selected)
-        {
-            var contact = await App.Database.GetItemAsync(selected.Id);
-            await App.Database.DeleteItemAsync(contact);
-            Contacts.FirstOrDefault(d => d.Key == selected.NameSort).Remove(selected);
+            await Application.Current.MainPage.Navigation.PushAsync(newContactPage);
         }
         public async void ShowMoreOptions(Contact selected)
         {
@@ -74,6 +68,7 @@ namespace XFContactsSample.ViewModels
         }
         public async void AddContact(Contact contact)
         {
+            //TODO: Actualizar directamente desde la base de datos  
             if (ValidContact(contact) && contact.Id == 0)
             {
                 var group = Contacts.FirstOrDefault(d => d.Key == contact.NameSort);
@@ -92,6 +87,13 @@ namespace XFContactsSample.ViewModels
             }
 
             await Application.Current.MainPage.Navigation.PopAsync(true);
+        }
+        public async void DeleteContact(Contact selected)
+        {
+            //TODO: Actualizar directamente desde la base de datos  
+            var contact = await App.Database.GetItemAsync(selected.Id);
+            await App.Database.DeleteItemAsync(contact);
+            Contacts.FirstOrDefault(d => d.Key == selected.NameSort).Remove(selected);
         }
         public bool ValidContact(Contact contact)
         {
