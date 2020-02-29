@@ -2,8 +2,10 @@
 using Plugin.Media.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using Xamarin.Forms;
 using XFContactsSample.Models;
@@ -41,12 +43,10 @@ namespace XFContactsSample.ViewModels
         #endregion
 
         #region Actions
-        public Action<Contact> SaveContact;
         public ICommand ChangeShownInfoCommand { get; set; }
         public ICommand ChangeNameShownInfoCommand { get; set; }
         public ICommand SetContactImageCommand { get; set; }
-        public ICommand SaveContactCommand =>
-            new Command<Contact>(SaveContact);
+        public ICommand SaveContactInfoCommand { get; set; }
         public ICommand ScanContactCommand =>
             new Command(ScanContact);
         #endregion
@@ -64,13 +64,10 @@ namespace XFContactsSample.ViewModels
         public NewContactPageViewModel(Contact contact)
         {
             Contact = contact;
-            SetUp();
         }
 
         public void SetUp()
         {
-            //TODO: Agregar escaneo de imagenes
-
             if (Contact == null)
             {
                 Contact = new Contact();
@@ -94,19 +91,22 @@ namespace XFContactsSample.ViewModels
             ChangeNameShownInfoCommand = new Command(ShowNameInfo);
 
             SetContactImageCommand = new Command(SetContactImage);
-        }
 
+            SaveContactInfoCommand = new Command(async () =>
+            {
+                await App.Database.SaveItemAsync(Contact);
+                await Application.Current.MainPage.Navigation.PopAsync(true);
+            });
+        }
         public void ShowInfo()
         {
             ShowMoreInfo = !ShowMoreInfo;
             MoreFieldsNotShowing = false;
         }
-
         public void ShowNameInfo()
         {
             ShowMoreNameInfo = !ShowMoreNameInfo;
         }
-
         public async void SetContactImage()
         {
             await CrossMedia.Current.Initialize();
@@ -149,7 +149,6 @@ namespace XFContactsSample.ViewModels
                 return stream;
             });
         }
-
         public async void ScanContact()
         {
             var scannedContactHandler = new Action<Result>(GetScannedContact);
@@ -157,7 +156,6 @@ namespace XFContactsSample.ViewModels
 
             await Application.Current.MainPage.Navigation.PushAsync(page, true);
         }
-
         public void GetScannedContact(Result result)
         {
             Device.BeginInvokeOnMainThread(async () =>
@@ -167,8 +165,17 @@ namespace XFContactsSample.ViewModels
                 Contact.LastName = contact[1];
                 Contact.Phone = contact[2];
                 await Application.Current.MainPage.Navigation.PopAsync(true);
-                SaveContactCommand.Execute(Contact);
+                SaveContactInfoCommand.Execute(Contact);
             });
+        }
+        public bool ValidContact(Contact contact)
+        {
+            if (!string.IsNullOrEmpty(contact.FirstName) || !string.IsNullOrEmpty(contact.LastName)
+            || !string.IsNullOrEmpty(contact.Phone) || !string.IsNullOrEmpty(contact.Email))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

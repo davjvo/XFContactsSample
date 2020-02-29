@@ -39,56 +39,61 @@
             </Grid>
         </Frame>
 
-        <CollectionView
-            ItemsSource="{Binding Contacts}"
-            SelectedItem="{Binding Selected, Mode=TwoWay}"
-            VerticalScrollBarVisibility="Never"
-            IsGrouped="True"
-        >
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.GroupHeaderTemplate>
-                <DataTemplate>
-                    <Frame Padding="20, 0">
-                        <Label Text="{Binding Key}" FontSize="Title" FontAttributes="Bold" />
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.GroupHeaderTemplate>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <SwipeView>
-                        <SwipeView.LeftItems>
-                            <SwipeItem 
+        <RefreshView
+             Command="{Binding SetContactsCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+                ItemsSource="{Binding Contacts}"
+                SelectedItem="{Binding Selected, Mode=TwoWay}"
+                VerticalScrollBarVisibility="Never"
+                IsGrouped="True"
+            >
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Frame Padding="20, 0">
+                            <Label Text="{Binding Key}" FontSize="Title" FontAttributes="Bold" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.LeftItems>
+                                <SwipeItem 
                                 Text="More"
                                 IconImageSource="kabab"
                                 BackgroundColor="Accent"
                                 Command="{Binding BindingContext.ShowMoreOptionsCommand, Source={x:Reference ContactsList} }"
                                 CommandParameter="{Binding .}"
                             />
-                            <SwipeItem 
+                                <SwipeItem 
                                 Text="Delete"
                                 IconImageSource="delete"
                                 BackgroundColor="Red"
                                 Command="{Binding BindingContext.DeleteContactCommand, Source={x:Reference ContactsList} }"
                                 CommandParameter="{Binding .}"
                             />
-                        </SwipeView.LeftItems>
-                        <Frame>
-                            <Label Text="{Binding DisplayName}" FontSize="Subtitle" />
-                        </Frame>
-                    </SwipeView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <DataTemplate>
-                    <ViewCell>
-                        <Frame>
-                            <Label Text="No data to show, press the plus button to add a new contact!" FontSize="Title" FontAttributes="Bold" />
-                        </Frame>
-                    </ViewCell>
-                </DataTemplate>
-            </CollectionView.EmptyView>
-        </CollectionView>
+                            </SwipeView.LeftItems>
+                            <Frame>
+                                <Label Text="{Binding DisplayName}" FontSize="Subtitle" />
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame>
+                                <Label Text="No data to show, press the plus button to add a new contact!" FontSize="Title" FontAttributes="Bold" />
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
     </StackLayout>
 </ContentPage>

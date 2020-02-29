@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
@@ -15,27 +13,37 @@ namespace XFContactsSample.ViewModels
     public class ContactsListPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public ObservableCollection<Grouping<string, Contact>> Contacts { get; set; }
+        public bool IsRefreshing { get; set; }
+        public ObservableCollection<Grouping<string, Contact>> Contacts { get; private set; }
         public ICommand NavigateToNewContact =>
             new Command(GoToNew);
         public ICommand DeleteContactCommand =>
             new Command<Contact>(DeleteContact);
         public ICommand ShowMoreOptionsCommand =>
             new Command<Contact>(ShowMoreOptions);
+        public ICommand SetContactsCommand => 
+            new Command(async () =>
+            {
+                IsRefreshing = true;
+                var databaseData = await App.Database.GetItemsAsync();
+                var groupedData = databaseData
+                                    .GroupBy(d => d.NameSort)
+                                    .Select(d => new Grouping<string, Contact>(d.Key, d))
+                                    .OrderBy(d => d.Key)
+                                    .ToList();
+                Contacts = new ObservableCollection<Grouping<string, Contact>>(groupedData);
+                IsRefreshing = false;
+            });
         private const string Call = "Call";
         private const string Edit = "Edit";
 
         public ContactsListPageViewModel()
         {
             App.Database.GetItemsAsync().SafeFireAndForget(false);
-            Contacts = new ObservableCollection<Grouping<string, Contact>>();
         }
         public async void GoToNew()
         {
-            var newContactPageViewModel = new NewContactPageViewModel
-            {
-                SaveContact = new Action<Contact>(AddContact)
-            };
+            var newContactPageViewModel = new NewContactPageViewModel();
 
             var newContactPage = new NewContactPage(newContactPageViewModel);
             await Application.Current.MainPage.Navigation.PushAsync(newContactPage);
@@ -55,10 +63,7 @@ namespace XFContactsSample.ViewModels
                     PhoneDialer.Open(selected.Phone);
                     break;
                 case Edit:
-                    var contactPageContext = new NewContactPageViewModel(selected)
-                    {
-                        SaveContact = new Action<Contact>(AddContact)
-                    };
+                    var contactPageContext = new NewContactPageViewModel(selected);
                     var editPage = new NewContactPage(contactPageContext);
                     await Application.Current.MainPage.Navigation.PushAsync(editPage);
                     break;
@@ -66,43 +71,10 @@ namespace XFContactsSample.ViewModels
                     break;
             }
         }
-        public async void AddContact(Contact contact)
-        {
-            //TODO: Actualizar directamente desde la base de datos  
-            if (ValidContact(contact) && contact.Id == 0)
-            {
-                var group = Contacts.FirstOrDefault(d => d.Key == contact.NameSort);
-
-                if (group != null)
-                {
-                    group.Add(contact);
-                }
-                else
-                {
-                    var newGroup = new Grouping<string, Contact>(contact.NameSort, new List<Contact> { contact });
-                    Contacts.Add(newGroup);
-                }
-
-                await App.Database.SaveItemAsync(contact);
-            }
-
-            await Application.Current.MainPage.Navigation.PopAsync(true);
-        }
         public async void DeleteContact(Contact selected)
         {
-            //TODO: Actualizar directamente desde la base de datos  
-            var contact = await App.Database.GetItemAsync(selected.Id);
-            await App.Database.DeleteItemAsync(contact);
-            Contacts.FirstOrDefault(d => d.Key == selected.NameSort).Remove(selected);
-        }
-        public bool ValidContact(Contact contact)
-        {
-            if (!string.IsNullOrEmpty(contact.FirstName) || !string.IsNullOrEmpty(contact.LastName)
-            || !string.IsNullOrEmpty(contact.Phone) || !string.IsNullOrEmpty(contact.Email))
-            {
-                return true;
-            }
-            return false;
+            await App.Database.DeleteItemAsync(selected);
+            SetContactsCommand.Execute(null);
         }
     }
 }

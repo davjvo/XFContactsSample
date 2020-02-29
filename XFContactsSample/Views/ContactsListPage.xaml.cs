@@ -7,10 +7,17 @@ namespace XFContactsSample.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ContactsListPage : ContentPage
     {
-        public ContactsListPage(ContactsListPageViewModel context)
+        public ContactsListPageViewModel Context { get; set; }
+        public ContactsListPage()
         {
             InitializeComponent();
-            BindingContext = context;
+            BindingContext = Context = new ContactsListPageViewModel();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Context.SetContactsCommand.Execute(null);
         }
     }
 }

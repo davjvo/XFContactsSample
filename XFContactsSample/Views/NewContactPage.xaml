@@ -7,7 +7,7 @@
              x:Class="XFContactsSample.Views.NewContactPage"
              Title="Create contact">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="Save" Order="Primary" Text="Save" Priority="0" Command="{Binding SaveContactCommand}" CommandParameter="{Binding Contact}" />
+        <ToolbarItem Name="Save" Order="Primary" Text="Save" Priority="0" Command="{Binding SaveContactInfoCommand}" CommandParameter="{Binding Contact}" />
         <ToolbarItem Name="Help" Order="Secondary" Text="Help &amp; feedback" Priority="1" />
         <ToolbarItem Name="Scan" Order="Secondary" Text="Scan" Priority="1" Command="{Binding ScanContactCommand}" />
     </ContentPage.ToolbarItems>
